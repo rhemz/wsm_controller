@@ -1,0 +1,1 @@
+FANS_ON = False
