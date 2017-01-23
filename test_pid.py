@@ -15,7 +15,10 @@ NUM_INPUTS = 100
 if __name__ == '__main__':
     pid = PID(
         set_point=SET_POINT,
-        interval=INTERVAL
+        interval=INTERVAL,
+        p=1.0,
+        i=1.0,
+        d=1.0
     )
 
     for i in xrange(1, NUM_INPUTS):

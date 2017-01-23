@@ -45,8 +45,7 @@ class PID(object):
         self._p_term = 0.0
         self._i_term = 0.0
         self._d_term = 0.0
-
-        self._output = None
+        self._output = 0.0
 
     def calculate(self, input_value):
         self._current_time = time.time()
@@ -56,7 +55,7 @@ class PID(object):
         error_diff = error - self._last_error
 
         # check to see if any new calculations should be performed
-        if self._output is not None and time_diff < self._interval:
+        if time_diff < self._interval:
             return self._output
 
         self._p_term = self.P * error
