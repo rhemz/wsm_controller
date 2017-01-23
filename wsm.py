@@ -7,12 +7,6 @@ import config
 import state
 
 
-class RuntimeState(object):
-
-    def __init__(self):
-        self.FANS_ON = False
-
-
 def fans_on(outputs):
     # pibrella.light.green.on()
     pibrella.light.green.pulse(0.5)

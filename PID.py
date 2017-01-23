@@ -39,45 +39,49 @@ class PID(object):
         self.interval = interval
         self.windup_correction = windup_correction
 
-        self.current_time = time.time()
-        self.last_calculation_time = self.current_time
-        self.last_error = 0.0
-        self.p_term = 0.0
-        self.i_term = 0.0
-        self.d_term = 0.0
+        self._current_time = time.time()
+        self._last_calculation_time = self._current_time
+        self._last_error = 0.0
+        self._p_term = 0.0
+        self._i_term = 0.0
+        self._d_term = 0.0
 
-        self.output = None
+        self._output = None
 
     def calculate(self, input_value):
-        self.current_time = time.time()
+        self._current_time = time.time()
 
         error = self._set_point - input_value
-        time_diff = self.current_time - self.last_calculation_time
-        error_diff = error - self.last_error
+        time_diff = self._current_time - self._last_calculation_time
+        error_diff = error - self._last_error
 
         # check to see if any new calculations should be performed
-        if self.output is not None and time_diff < self._interval:
-            return self.output
+        if self._output is not None and time_diff < self._interval:
+            return self._output
 
-        self.p_term = self.P * error
-        self.i_term = error * time_diff
-        self.d_term = error_diff / time_diff if time_diff > 0 else 0.0
+        self._p_term = self.P * error
+        self._i_term = error * time_diff
+        self._d_term = error_diff / time_diff if time_diff > 0 else 0.0
 
         # integral windup protection
-        if self.i_term > self.windup_correction:
-            self.i_term = self.windup_correction
-        elif self.i_term < self.windup_correction * -1:
-            self.i_term = self.windup_correction * -1
+        if self._i_term > self.windup_correction:
+            self._i_term = self.windup_correction
+        elif self._i_term < self.windup_correction * -1:
+            self._i_term = self.windup_correction * -1
 
-        self.last_calculation_time = self.current_time
-        self.last_error = error
+        self._last_calculation_time = self._current_time
+        self._last_error = error
 
-        self.output = self.p_term + (self.I * self.i_term) + (self.D * self.d_term)
+        self._output = self._p_term + (self.I * self._i_term) + (self.D * self._d_term)
 
-        return self.output
+        return self._output
 
     def _valid_gain(self, value):
         return (isinstance(value, int) or isinstance(value, float)) and value >= 0.0
+
+    @property
+    def output(self):
+        return self._output
 
     @property
     def set_point(self):
